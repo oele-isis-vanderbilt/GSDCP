@@ -1,0 +1,41 @@
+{
+  "mode": "record",
+  "workers": {
+    "manager_ip": "129.59.104.153",
+    "manager_port": 9001,
+    "instances": [
+      {
+        "name": "linux-1",
+        "id": "linux-1",
+        "description": "local worker for the MMLA pipeline demo with a video node",
+        "remote": false
+      }
+    ]
+  },
+  "nodes": [
+    {
+       "registry_name": "GSDCP_UMC1820",
+        "name": "audio-test-umc1820",
+        "kwargs": {
+          "name": "audio-test-umc1820",
+          "chunk_key": "audio",
+          "save_name": "joyce-and-musk"
+        },
+        "package": "gsdcp"
+    }
+  ],
+  "adj": [],
+  "manager_config": {
+    "logdir": "gemstep-logs",
+    "port": 9001
+  },
+  "mappings": {
+    "linux-1": [
+        "audio-test-umc1820"
+    ]
+  },
+  "timeouts": {
+    "commit_timeout": 200,
+    "collect_timeout": 400
+  }
+}

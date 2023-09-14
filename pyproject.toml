@@ -46,6 +46,11 @@ extend-exclude = ["run.py"]
 "__init__.py" = ["E402", "F401"]
 
 
+[project.entry-points."chimerapy.orchestrator.nodes_registry"]
+get_nodes_registry = "gsdcp:register_nodes_metadata"
+
+
+
 # Reference:
 # https://stackoverflow.com/questions/4673373/logging-within-pytest-tests
 [tool.pytest.ini_options]

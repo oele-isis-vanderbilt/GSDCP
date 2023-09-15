@@ -1,0 +1,60 @@
+{
+  "mode": "record",
+  "workers": {
+    "manager_ip": "129.59.104.153",
+    "manager_port": 9001,
+    "instances": [
+      {
+        "name": "local",
+        "id": "local",
+        "description": "local worker for the MMLA pipeline demo with a screen recorder node"
+      },
+      {
+        "name": "mac",
+        "id": "mac",
+        "description": "mac worker for the MMLA pipeline demo with a screen recorder node",
+        "remote": true
+      }
+    ]
+  },
+  "nodes": [
+    {
+      "registry_name": "CPPipelines_ScreenCapture",
+      "name": "screen-capture",
+      "kwargs": {
+        "scale": 0.75,
+        "save_name": "screen-capture-mac"
+      },
+      "package": "chimerapy-pipelines"
+    },
+    {
+      "registry_name": "CPPipelines_ShowWindows",
+      "name": "show",
+      "kwargs": {},
+      "package": "chimerapy-pipelines"
+    }
+  ],
+  "adj": [
+    [
+      "screen-capture",
+      "show"
+    ]
+  ],
+  "manager_config": {
+    "logdir": "cp-logs",
+    "port": 9001
+  },
+  "mappings": {
+    "mac": [
+      "screen-capture"
+    ],
+    "local": [
+      "show"
+    ]
+  },
+  "timeouts": {
+    "commit_timeout": 500,
+    "record_timeout": 500,
+    "collect_timeout": 500
+  }
+}

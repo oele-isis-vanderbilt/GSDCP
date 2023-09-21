@@ -6,5 +6,6 @@ def register_nodes_metadata():
         "description": "Nodes specific to the GEM-STEP data collection setup.",
         "nodes": [
             "gsdcp.umc1820_node:UMC1820",
+            "gsdcp.filewatcher_node:FileWatcher",
         ],
     }

@@ -13,14 +13,11 @@
   },
   "nodes": [
     {
-       "registry_name": "GSDCP_FileWatcher",
+       "registry_name": "GSDCP_FilesWatcher",
         "name": "file-watcher",
         "kwargs": {
           "name": "file-watcher",
-          "target_files": [
-            "watch_dir/log_file_1.log",
-            "watch_dir/log_file_2.log"
-          ]
+          "target_directory": "/home/umesh/isis/oele/GSDCP/watch_dir"
         },
         "package": "gsdcp"
     }
@@ -39,6 +36,7 @@
   "timeouts": {
     "commit_timeout": 500,
     "record_timeout": 500,
-    "collect_timeout": 500
+    "collect_timeout": 500,
+    "stop_timeout": 500
   }
 }

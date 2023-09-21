@@ -16,6 +16,7 @@ dependencies = [
     'chimerapy-engine',
     'chimerapy-pipelines',
     'chimerapy-orchestrator',
+    'watchdog'
 ]
 
 

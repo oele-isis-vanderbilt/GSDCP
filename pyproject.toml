@@ -19,6 +19,11 @@ dependencies = [
     'watchdog'
 ]
 
+# Optional dependencies
+[project.optional-dependencies]
+scripts = [
+    'faker'
+]
 
 [project.urls]
 homepath = "https://github.com/oele-isis-vanderbilt/GSDCP.git"

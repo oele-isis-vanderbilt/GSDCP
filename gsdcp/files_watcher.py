@@ -91,11 +91,3 @@ class DirectoryObserver:
         self.handler.enqueue_sentinel()
         self.observer.stop()
         self.observer.join()
-
-
-if __name__ == "__main__":
-    observer = DirectoryObserver(path="/home/umesh/isis/oele/GSDCP/watch_dir")
-    observer.setup()
-    observer.start(blocking=False)
-    time.sleep(10)
-    observer.teardown()

@@ -1,12 +1,12 @@
 from multiprocessing import Queue
 from pathlib import Path
 from queue import Empty
-from typing import Dict, List, Optional, Union
+from typing import Optional, Union
 
 from chimerapy.engine import DataChunk, Node
 from chimerapy.orchestrator import source_node
 
-from gsdcp.files_watcher import DirectoryObserver, ModifiedFileData
+from gsdcp.files_watcher import SENTINEL, DirectoryObserver, ModifiedFileData
 
 
 @source_node(name="GSDCP_FilesWatcher")
@@ -17,6 +17,8 @@ class FilesWatcher(Node):
     ----------
     target_directory : str
         The directory to watch for changes.
+    chunk_key : str, optional, default="text"
+        The key to use for the DataChunk, by default "text"
     """
 
     def __init__(
@@ -47,6 +49,9 @@ class FilesWatcher(Node):
                 timeout=1
             )
 
+            if modification_data is SENTINEL:
+                return None
+
             save_name = Path(modification_data.path).stem
             suffix = Path(modification_data.path).suffix[1:]
             text = "".join(modification_data.new_lines)
@@ -59,22 +64,10 @@ class FilesWatcher(Node):
 
             ret_chunk = DataChunk()
             self.logger.debug("Changed file: %s", modification_data.path)
-            ret_chunk.add("text", text)
+            ret_chunk.add(self.chunk_key, text)
             return ret_chunk
         except Empty:
             return None
-
-    def _read_new_lines(self) -> Dict[str, List[str]]:
-        new_lines = {}
-
-        for file in self.target_files:
-            with open(file, "r") as f:
-                f.seek(self.handlers[file])
-                nl = f.readlines()
-                self.handlers[file] = f.tell()
-                new_lines[file] = nl
-
-        return new_lines
 
     def teardown(self):
         self.observer.teardown()

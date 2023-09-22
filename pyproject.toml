@@ -16,8 +16,14 @@ dependencies = [
     'chimerapy-engine',
     'chimerapy-pipelines',
     'chimerapy-orchestrator',
+    'watchdog'
 ]
 
+# Optional dependencies
+[project.optional-dependencies]
+scripts = [
+    'faker'
+]
 
 [project.urls]
 homepath = "https://github.com/oele-isis-vanderbilt/GSDCP.git"

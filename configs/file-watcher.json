@@ -1,0 +1,42 @@
+{
+  "mode": "record",
+  "workers": {
+    "manager_ip": "129.59.104.153",
+    "manager_port": 9001,
+    "instances": [
+      {
+        "name": "local",
+        "id": "local",
+        "description": "local worker for the MMLA pipeline demo with a screen recorder node"
+      }
+    ]
+  },
+  "nodes": [
+    {
+       "registry_name": "GSDCP_FilesWatcher",
+        "name": "file-watcher",
+        "kwargs": {
+          "name": "file-watcher",
+          "target_directory": "/home/umesh/isis/oele/GSDCP/watch_dir"
+        },
+        "package": "gsdcp"
+    }
+  ],
+  "adj": [
+  ],
+  "manager_config": {
+    "logdir": "cp-logs",
+    "port": 9001
+  },
+  "mappings": {
+    "local": [
+      "file-watcher"
+    ]
+  },
+  "timeouts": {
+    "commit_timeout": 500,
+    "record_timeout": 500,
+    "collect_timeout": 500,
+    "stop_timeout": 500
+  }
+}

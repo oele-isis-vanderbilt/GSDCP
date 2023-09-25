@@ -17,7 +17,9 @@
         "name": "file-watcher",
         "kwargs": {
           "name": "file-watcher",
-          "target_directory": "/home/umesh/isis/oele/GSDCP/watch_dir"
+          "patterns": [".log"],
+          "observer_type": "kqueue",
+          "target_directory": "/Users/oele/Documents/projects/GSDCP/watch_dir"
         },
         "package": "gsdcp"
     }

@@ -1,7 +1,7 @@
 from multiprocessing import Queue
 from pathlib import Path
 from queue import Empty
-from typing import Optional, Union
+from typing import List, Literal, Optional, Union
 
 from chimerapy.engine import DataChunk, Node
 from chimerapy.orchestrator import source_node
@@ -27,6 +27,15 @@ class FilesWatcher(Node):
         target_directory: str,
         chunk_key: str = "text",
         name: str = "FileWatcher",
+        patterns: Optional[List[str]] = None,
+        observer_type: Literal[
+            "inotify",
+            "fsevents",
+            "kqueue",
+            "read_directory_changes",
+            "fallback",
+            "auto",
+        ] = "auto",
     ) -> None:
         super().__init__(name=name)
         self.target_directory: str = target_directory
@@ -34,10 +43,23 @@ class FilesWatcher(Node):
         self.data_queue: Optional[Queue] = None
         self.chunk_key: str = chunk_key
         self.started: bool = False
+        self.patterns: Optional[List[str]] = patterns
+        self.observer_type: Literal[
+            "inotify",
+            "fsevents",
+            "kqueue",
+            "read_directory_changes",
+            "fallback",
+            "auto",
+        ] = observer_type
 
     def setup(self) -> None:
         """Initialize the observer and data queue."""
-        self.observer = DirectoryObserver(self.target_directory)
+        self.observer = DirectoryObserver(
+            self.target_directory,
+            patterns=self.patterns,
+            observer_type=self.observer_type,
+        )
         self.data_queue = Queue()
         self.observer.setup(clients=[self.data_queue])
         self.logger.info("FileWatcher setup complete.")

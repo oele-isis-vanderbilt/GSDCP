@@ -14,7 +14,7 @@ WATCH_DIR = Path(__file__).parent.parent / "watch_dir"
 def setup_loggers():
     logger1 = logging.getLogger("LOG FILE 1")
     logger1.setLevel(logging.DEBUG)
-    h1 = logging.FileHandler(WATCH_DIR / "log_file_1.log", mode="w")
+    h1 = logging.FileHandler(WATCH_DIR / "log_file_1.txt", mode="w")
     h2 = logging.StreamHandler()
     formatter = logging.Formatter(
         "%(asctime)s - %(name)s - %(levelname)s - %(message)s"

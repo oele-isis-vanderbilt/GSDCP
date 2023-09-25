@@ -1,10 +1,10 @@
 import time
 from dataclasses import dataclass
+from pathlib import Path
 from queue import Queue
-from typing import Dict, List, Optional, Set
+from typing import Dict, List, Literal, Optional, Set
 
 from watchdog.events import FileSystemEventHandler
-from watchdog.observers import Observer
 
 SENTINEL = None
 
@@ -20,9 +20,10 @@ class ModifiedFileData:
 class Handler(FileSystemEventHandler):
     """Custom file system event handler."""
 
-    def __init__(self):
+    def __init__(self, patterns: Optional[List[str]] = None):
         super().__init__()
         self.clients: Set[Queue] = set()  # A set of client queues
+        self.patterns = set(patterns or [])
         self.handles: Dict[
             str, int
         ] = {}  # A dictionary to keep track of file positions
@@ -45,14 +46,16 @@ class Handler(FileSystemEventHandler):
             return
 
         elif event.event_type == "created":
-            self.handles[event.src_path] = 0
-
-        elif event.event_type == "modified":
-            if event.src_path not in self.handles:
+            if self.is_target_pattern(event.src_path):
                 self.handles[event.src_path] = 0
 
-            lines = self._read_new_lines(event.src_path)
-            self._broadcast_modified_file_data(event.src_path, lines)
+        elif event.event_type == "modified":
+            if self.is_target_pattern(event.src_path):
+                if event.src_path not in self.handles:
+                    self.handles[event.src_path] = 0
+
+                lines = self._read_new_lines(event.src_path)
+                self._broadcast_modified_file_data(event.src_path, lines)
 
     def _broadcast_modified_file_data(
         self, file: str, lines: List[str]
@@ -76,17 +79,66 @@ class Handler(FileSystemEventHandler):
         for q in self.clients:
             q.put_nowait(SENTINEL)
 
+    def is_target_pattern(self, file_path: str) -> bool:
+        """Check if a file matches any of the target patterns."""
+        if self.patterns == set():
+            return True
+        else:
+            return self._get_extension(file_path) in self.patterns
+
+    def _get_extension(self, file_path) -> None:
+        """Get the file extension of a file."""
+        return Path(file_path).suffix
+
 
 class DirectoryObserver:
     """Class to observe a directory for file changes."""
 
-    def __init__(self, path: str):
+    def __init__(
+        self,
+        path: str,
+        patterns: Optional[List[str]] = None,
+        observer_type: Literal[
+            "inotify",
+            "fsevents",
+            "kqueue",
+            "read_directory_changes",
+            "fallback",
+            "auto",
+        ] = "auto",
+    ):
         self.path = path
-        self.observer = Observer()
-        self.handler = Handler()
+        self.observer = None
+        self.handler = Handler(patterns=patterns)
+        self.observer_type = observer_type
 
     def setup(self, clients: Optional[List[Queue]] = None) -> None:
         """Setup the observer."""
+        if self.observer_type == "auto":
+            from watchdog.observers import Observer
+
+        elif self.observer_type == "inotify":
+            from watchdog.observers.inotify import InotifyObserver as Observer
+
+        elif self.observer_type == "fsevents":
+            from watchdog.observers.fsevents import FSEventsObserver as Observer
+
+        elif self.observer_type == "kqueue":
+            from watchdog.observers.kqueue import KqueueObserver as Observer
+
+        elif self.observer_type == "read_directory_changes":
+            from watchdog.observers.read_directory_changes import (
+                WindowsApiObserver as Observer,
+            )
+
+        elif self.observer_type == "fallback":
+            from watchdog.observers.polling import PollingObserver as Observer
+
+        else:
+            raise ValueError(f"Invalid observer type: {self.observer_type}")
+
+        self.observer = Observer()
+
         if clients is not None:
             for q in clients:
                 self.handler.add_client(q)

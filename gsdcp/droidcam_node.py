@@ -1,3 +1,5 @@
+import time
+
 import cv2
 from chimerapy.engine import DataChunk, Node
 from chimerapy.orchestrator import source_node
@@ -29,16 +31,25 @@ class DroidCam(Node):
         ret, frame = self.cap.read()
 
         if not ret:
-            raise RuntimeError("Failed to read from DroidCam.")
+            self.logger.error("Failed to capture frame from DroidCam.")
+            self.retry_capture()
+            ret, frame = self.cap.read()
 
         data_chunk = DataChunk()
         data_chunk.add(self.frame_key, frame, "image")
 
         if self.save_name is not None:
             self.save_video(self.save_name, frame, 30)
-
+        time.sleep(1 / 35)
         return data_chunk
+
+    def retry_capture(self):
+        if self.cap is not None:
+            self.cap.release()
+        self.logger.info("Retrying to connect to DroidCam...")
+        self.cap = cv2.VideoCapture(
+            f"http://{self.phone_ip}:{self.droidcam_port}/video"
+        )
 
     def teardown(self):
         self.cap.release()
-        cv2.destroyAllWindows()

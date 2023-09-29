@@ -38,7 +38,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--force-suffix",
         type=str,
-        default="/force/1920x1080",
+        default="/video/mjpegfeed?1920x1080",
         help="Force suffix for the phone.",
     )
 

@@ -1,9 +1,13 @@
+from multiprocessing import Queue
+from queue import Empty
 from typing import Optional
 
 import cv2
 import imutils
 from chimerapy.engine import DataChunk, Node
 from chimerapy.orchestrator import source_node
+
+from .threaded_droidcam_streamer import DroidCamStreamer
 
 
 @source_node(name="GSDCP_DroidCam")
@@ -13,7 +17,7 @@ class DroidCam(Node):
         phone_ip: str,
         droidcam_port: int = 4747,
         frame_key: str = "frame",
-        force_suffix: Optional[str] = "/force/1920x1080",
+        force_suffix: Optional[str] = "/mjpegfeed?1920x1080",
         save_name: str = None,
         name: str = "DroidCam",
     ):
@@ -23,7 +27,9 @@ class DroidCam(Node):
         self.frame_key = frame_key
         self.save_name = save_name
         self.force_suffix = force_suffix
-        self.cap = None
+        self.streamer = None
+        self.started = False
+        self.data_queue = None
 
     def setup(self):
         addr = f"http://{self.phone_ip}:{self.droidcam_port}/video"
@@ -31,36 +37,28 @@ class DroidCam(Node):
             addr += self.force_suffix
 
         self.logger.info(f"Connecting to DroidCam... at {addr}")
-        self.cap = cv2.VideoCapture(addr)
+        self.streamer = DroidCamStreamer(addr)
+        self.started = False
+        self.data_queue = Queue()
 
-    def step(self) -> DataChunk:
-        ret, frame = self.cap.read()
+    def step(self) -> Optional[DataChunk]:
+        if not self.started and self.streamer is not None:
+            self.streamer.start()
+            self.streamer.add_client(self.data_queue)
+            self.started = True
 
-        if not ret:
-            self.logger.error("Failed to capture frame from DroidCam.")
-            self.retry_capture()
-            ret, frame = self.cap.read()
-
-        data_chunk = DataChunk()
-
-        if self.save_name is not None:
+        try:
+            img = self.data_queue.get(timeout=1)
+            if img is None:
+                return None
+            frame = img
             self.save_video(self.save_name, frame, 30)
-
-        frame = imutils.resize(frame, width=640)
-        data_chunk.add(self.frame_key, frame, "image")
-
-        return data_chunk
-
-    def retry_capture(self):
-        if self.cap is not None:
-            self.cap.release()
-        self.logger.info("Retrying to connect to DroidCam...")
-        addr = f"http://{self.phone_ip}:{self.droidcam_port}/video"
-
-        if self.force_suffix is not None:
-            addr += self.force_suffix
-
-        self.cap = cv2.VideoCapture(addr)
+            data_chunk = DataChunk()
+            small_image = imutils.resize(frame, width=640)
+            data_chunk.add(self.frame_key, small_image, "image")
+            return data_chunk
+        except Empty:
+            return None
 
     def teardown(self):
-        self.cap.release()
+        self.streamer.shut_down()

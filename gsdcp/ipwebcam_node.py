@@ -1,6 +1,7 @@
 import cv2
 from chimerapy.engine import Node, DataChunk
 import imutils
+import numpy as np
 
 from chimerapy.orchestrator import source_node
 
@@ -17,13 +18,12 @@ class IPWebCam(Node):
 
     def step(self) -> DataChunk:
         ret, frame = self.cap.read()
-
+        data_chunk = DataChunk()
         if not ret:
             self.logger.error("Failed to capture frame from IPWebCam.")
-            self.retry_capture()
-            ret, frame = self.cap.read()
+            data_chunk.add("frame", np.random.randint(255, size=(640, 480, 3), dtype=np.uint8), "image")
+            return data_chunk
 
-        data_chunk = DataChunk()
         if self.save_name is not None:
             self.save_video(self.save_name, frame, 30)
 

@@ -1,5 +1,8 @@
+import time
+
 import cv2
 import imutils
+import numpy as np
 import requests
 from chimerapy.engine import DataChunk, Node
 from chimerapy.orchestrator import source_node
@@ -20,19 +23,25 @@ class IPWebCam(Node):
         self.tag = tag
         self.save_name = save_name
         self.started = False
+        self.last_frame = np.zeros((480, 640, 3), dtype=np.uint8)
 
     def setup(self):
-        self.cap = cv2.VideoCapture(f"{self.url}/video")
+        # Timeout is set to 10 second to avoid blocking the main thread
+        self.cap = cv2.VideoCapture(f"{self.url}")
         self.cap.set(cv2.CAP_PROP_BUFFERSIZE, 1)
+        self.cap.set(cv2.CAP_PROP_FPS, 30)
+        time.sleep(2)
 
     def step(self) -> DataChunk:
         if not self.started:
-            self._send_start_recording_request()
+            # self._send_start_recording_request()
+            pass
         data_chunk = DataChunk()
         ret, frame = self.cap.read()
 
         if not ret:
-            return None
+            data_chunk.add("frame", self.last_frame, "image")
+            return data_chunk
 
         if self.save_name is not None:
             self.save_video(
@@ -40,10 +49,12 @@ class IPWebCam(Node):
             )
 
         small_frame = imutils.resize(frame, width=640)
+        self.last_frame = small_frame
         data_chunk.add("frame", small_frame, "image")
 
         if self.state.fsm == "STOPPED":
-            self._send_stop_recording_request()
+            # self._send_stop_recording_request()
+            pass
 
         return data_chunk
 

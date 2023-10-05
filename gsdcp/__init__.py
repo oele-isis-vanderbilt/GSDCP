@@ -8,5 +8,6 @@ def register_nodes_metadata():
             "gsdcp.umc1820_node:UMC1820",
             "gsdcp.files_watcher_node:FilesWatcher",
             "gsdcp.droidcam_node:DroidCam",
+            "gsdcp.ipwebcam_node:IPWebCam",
         ],
     }

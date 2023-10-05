@@ -1,0 +1,99 @@
+{
+  "mode": "record",
+  "runtime": 600,
+  "workers": {
+    "manager_ip": "129.59.104.153",
+    "manager_port": 9001,
+    "instances": [
+      {
+        "name": "local",
+        "id": "local",
+        "description": "local worker for the MMLA pipeline demo with a screen recorder node"
+      },
+      {
+        "name": "windows",
+        "id": "windows",
+        "description": "remote worker for the MMLA pipeline demo with a screen recorder node",
+        "remote": true
+      },
+      {
+        "name": "mac",
+        "id": "mac",
+        "description": "remote worker for the MMLA pipeline demo with a screen recorder node",
+        "remote": true
+      }
+    ]
+  },
+  "nodes": [
+    {
+      "registry_name": "CPPipelines_ScreenCapture",
+      "name": "screen-capture-mac",
+      "kwargs": {
+        "scale": 0.5,
+        "save_name": "screen-capture-mac"
+      },
+      "package": "chimerapy-pipelines"
+    },
+    {
+      "registry_name": "CPPipelines_ScreenCapture",
+      "name": "screen-capture-windows",
+      "kwargs": {
+        "scale": 0.5,
+        "save_name": "screen-capture-windows"
+      },
+      "package": "chimerapy-pipelines"
+    },
+    {
+      "registry_name": "CPPipelines_ScreenCapture",
+      "name": "screen-capture-linux",
+      "kwargs": {
+        "scale": 0.5,
+        "save_name": "screen-capture-linux",
+        "monitor": 1
+      },
+      "package": "chimerapy-pipelines"
+    },
+    {
+      "registry_name": "CPPipelines_ShowWindows",
+      "name": "show",
+      "kwargs": {},
+      "package": "chimerapy-pipelines"
+    }
+  ],
+  "adj": [
+    [
+      "screen-capture-linux",
+      "show"
+    ],
+    [
+      "screen-capture-mac",
+      "show"
+    ],
+    [
+      "screen-capture-windows",
+      "show"
+    ]
+  ],
+  "manager_config": {
+    "logdir": "cp-logs",
+    "port": 9001
+  },
+  "mappings": {
+    "local": [
+      "screen-capture-linux",
+      "show"
+    ],
+    "mac": [
+      "screen-capture-mac"
+    ],
+    "windows": [
+      "screen-capture-windows"
+    ]
+  },
+  "timeouts": {
+    "commit_timeout": 500,
+    "record_timeout": 500,
+    "collect_timeout": 500,
+    "stop_timeout": 500
+  }
+}

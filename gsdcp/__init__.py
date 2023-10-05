@@ -9,6 +9,5 @@ def register_nodes_metadata():
             "gsdcp.files_watcher_node:FilesWatcher",
             "gsdcp.droidcam_node:DroidCam",
             "gsdcp.ipwebcam_node:IPWebCam",
-            "gsdcp.ivcam_node:IVCAM",
         ],
     }

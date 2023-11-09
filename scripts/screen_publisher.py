@@ -1,18 +1,17 @@
-from mss import mss
+import asyncio
+from datetime import datetime
 
-import numpy as np
-import simplejpeg
 import cv2
 import imutils
-from argparse import ArgumentParser
+import numpy as np
+import simplejpeg
 import zmq
-import asyncio
 import zmq.asyncio
-import cv2
-from datetime import datetime
+from mss import mss
 
 
 def append_timestamp(arr):
+    """Append timestamp to image."""
     timestamp = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
     cv2.putText(
         arr,
@@ -27,6 +26,7 @@ def append_timestamp(arr):
 
 
 async def publish_screen(capture, socket, scale, monitor, save_timestamp):
+    """Publish screen capture to socket."""
     img = capture.grab(capture.monitors[monitor])
     arr = np.array(img)
     arr = cv2.cvtColor(arr, cv2.COLOR_BGRA2BGR)
@@ -39,6 +39,7 @@ async def publish_screen(capture, socket, scale, monitor, save_timestamp):
 
 
 async def run(args):
+    """Run the publisher."""
     cap = mss()
     context = zmq.asyncio.Context()
     socket = context.socket(zmq.PUB)
@@ -47,23 +48,23 @@ async def run(args):
     socket.sndhwm = 1
     socket.rcvhwm = 1
 
+    print(f"Publishing screen capture on port {args.port}.")
     while True:
-        await publish_screen(cap, socket, args.scale, args.monitor, args.save_timestamp)
+        await publish_screen(
+            cap, socket, args.scale, args.monitor, args.save_timestamp
+        )
         await asyncio.sleep(1 / args.fps)
 
 
 if __name__ == "__main__":
-    from argparse import ArgumentParser, ArgumentDefaultsHelpFormatter
+    from argparse import ArgumentDefaultsHelpFormatter, ArgumentParser
+
     parser = ArgumentParser(
         description="Publish screen to ZMQ socket.",
         formatter_class=ArgumentDefaultsHelpFormatter,
     )
     parser.add_argument(
-        "--port",
-        "-p",
-        help="The port to publish on.",
-        type=int,
-        default=8080
+        "--port", "-p", help="The port to publish on.", type=int, default=8080
     )
 
     parser.add_argument(
@@ -71,23 +72,15 @@ if __name__ == "__main__":
         "-s",
         help="The scale to resize the image to.",
         type=float,
-        default=0.5
+        default=0.5,
     )
 
     parser.add_argument(
-        "--monitor",
-        "-m",
-        help="The monitor to capture.",
-        type=int,
-        default=0
+        "--monitor", "-m", help="The monitor to capture.", type=int, default=0
     )
 
     parser.add_argument(
-        "--fps",
-        "-f",
-        help="The FPS to capture at.",
-        type=int,
-        default=50
+        "--fps", "-f", help="The FPS to capture at.", type=int, default=50
     )
 
     parser.add_argument(
@@ -95,11 +88,8 @@ if __name__ == "__main__":
         "-t",
         help="Save timestamp on image.",
         action="store_true",
-        default=True
+        default=True,
     )
 
-    args = parser.parse_args()
-    asyncio.run(run(args))
-
-
-
+    cli_args = parser.parse_args()
+    asyncio.run(run(cli_args))

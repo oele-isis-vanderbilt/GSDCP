@@ -1,0 +1,117 @@
+{
+  "mode": "record",
+  "workers": {
+    "manager_ip": "129.59.104.153",
+    "manager_port": 9001,
+    "instances": [
+      {
+        "name": "windows-1",
+        "id": "windows-1",
+        "description": "local worker for the MMLA pipeline demo with a video node",
+        "remote": true
+      },
+      {
+        "name": "linux-1",
+        "id": "linux-1",
+        "description": "local worker for the MMLA pipeline demo with a video node",
+        "remote": false
+      }
+    ]
+  },
+  "nodes": [
+    {
+      "registry_name": "GSDCP_IPWebCam",
+      "name": "test-1",
+      "kwargs": {
+        "rtsp_url": "http://192.168.0.200:8080/video",
+        "save_name": "test-1"
+      },
+      "package": "gsdcp"
+    },
+    {
+      "registry_name": "GSDCP_IPWebCam",
+      "name": "test-2",
+      "kwargs": {
+        "rtsp_url": "http://192.168.0.238:8080/video",
+        "save_name": "test-2"
+      },
+      "package": "gsdcp"
+    },
+    {
+      "registry_name": "GSDCP_IPWebCam",
+      "name": "test-3",
+      "kwargs": {
+        "rtsp_url": "http://192.168.0.202:8080/video",
+        "save_name": "test-3"
+      },
+      "package": "gsdcp"
+    },
+    {
+      "registry_name": "GSDCP_IPWebCam",
+      "name": "test-3",
+      "kwargs": {
+        "rtsp_url": "http://192.168.0.233:8080/video",
+        "save_name": "test-3"
+      },
+      "package": "gsdcp"
+    },
+    {
+      "registry_name": "GSDCP_IPWebCam",
+      "name": "test-4",
+      "kwargs": {
+        "rtsp_url": "http://192.168.0.200:8080/video",
+        "save_name": "test-4"
+      },
+      "package": "gsdcp"
+    },
+    {
+      "registry_name": "CPPipelines_ShowWindows",
+      "name": "show",
+      "kwargs": {
+        "frames_key": "frame"
+      },
+      "package": "chimerapy-pipelines"
+    }
+  ],
+  "adj": [
+    [
+      "test-1",
+      "show"
+    ],
+    [
+      "test-2",
+      "show"
+    ],
+    [
+      "test-3",
+      "show"
+    ],
+    [
+      "test-4",
+      "show"
+    ]
+  ],
+  "manager_config": {
+    "logdir": "cp-logs",
+    "port": 9001
+  },
+  "mappings": {
+    "windows-1": [
+      "test-1",
+      "test-2"
+    ],
+    "linux-1": [
+      "show",
+      "test-3",
+      "test-4"
+    ]
+  },
+  "timeouts": {
+    "commit_timeout": 20000,
+    "preview_timeout": 20000,
+    "record_timeout": 20000,
+    "collect_timeout": 20000,
+    "stop_timeout": 20000,
+    "shutdown_timeout": 20000
+  }
+}

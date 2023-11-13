@@ -1,0 +1,125 @@
+{
+  "mode": "record",
+  "runtime": 1800,
+  "workers": {
+    "manager_ip": "129.59.104.153",
+    "manager_port": 9001,
+    "instances": [
+      {
+        "name": "local",
+        "id": "local",
+        "description": "local worker for the MMLA pipeline demo with a screen recorder node"
+      }
+    ]
+  },
+  "nodes": [
+    {
+      "registry_name": "GSDCP_IPWebCam",
+      "name": "cam-1",
+      "kwargs": {
+        "url": "http://192.168.0.22:4747/video?1920x1080",
+        "save_name": "cam-1"
+      },
+      "package": "gsdcp"
+    },
+    {
+      "registry_name": "GSDCP_IPWebCam",
+      "name": "cam-2",
+      "kwargs": {
+        "url": "http://192.168.0.204:4747/video?1920x1080",
+        "save_name": "cam-2"
+      },
+      "package": "gsdcp"
+    },
+    {
+      "registry_name": "GSDCP_IPWebCam",
+      "name": "cam-3",
+      "kwargs": {
+        "url": "http://192.168.0.170:4747/video?1920x1080",
+        "save_name": "cam-3"
+      },
+      "package": "gsdcp"
+    },
+    {
+      "registry_name": "GSDCP_IPWebCam",
+      "name": "cam-4",
+      "kwargs": {
+        "url": "http://192.168.0.210:4747/video?1920x1080",
+        "save_name": "cam-4"
+      },
+      "package": "gsdcp"
+    },
+    {
+      "registry_name": "GSDCP_UMC1820",
+      "name": "audio-test-umc1820",
+      "kwargs": {
+        "name": "audio-test-umc1820",
+        "chunk_key": "audio",
+        "save_name": "test-recording"
+      },
+      "package": "gsdcp"
+    },
+        {
+       "registry_name": "GSDCP_ScreenSubscriber",
+        "name": "screen-subscriber",
+        "kwargs": {
+          "name": "screen-subscriber",
+          "host": "192.168.0.179",
+          "port": 65300,
+          "save_name": "screen"
+        },
+        "package": "gsdcp"
+    },
+    {
+      "registry_name": "CPPipelines_ShowWindows",
+      "name": "show",
+      "kwargs": {},
+      "package": "chimerapy-pipelines"
+    }
+  ],
+  "adj": [
+    [
+      "cam-1",
+      "show"
+    ],
+    [
+      "cam-2",
+      "show"
+    ],
+    [
+      "cam-3",
+      "show"
+    ],
+    [
+      "cam-4",
+      "show"
+    ],
+    [
+      "screen-subscriber",
+      "show"
+    ]
+  ],
+  "manager_config": {
+    "logdir": "wyatt-tests",
+    "port": 9001
+  },
+  "mappings": {
+    "local": [
+      "audio-test-umc1820",
+      "cam-1",
+      "cam-2",
+      "cam-3",
+      "cam-4",
+      "screen-subscriber",
+      "show"
+    ]
+  },
+  "timeouts": {
+    "commit_timeout": 20000,
+    "preview_timeout": 20000,
+    "record_timeout": 20000,
+    "collect_timeout": 20000,
+    "stop_timeout": 20000,
+    "shutdown_timeout": 20000
+  }
+}

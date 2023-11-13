@@ -1,5 +1,3 @@
-import time
-
 import cv2
 import imutils
 import numpy as np
@@ -27,9 +25,9 @@ class IPWebCam(Node):
     def setup(self) -> None:
         # Timeout is set to 2 second to avoid blocking the main thread
         self.cap = cv2.VideoCapture(f"{self.url}")
-        self.cap.set(cv2.CAP_PROP_BUFFERSIZE, 1)
+        self.cap.set(cv2.CAP_PROP_BUFFERSIZE, 3)
         self.cap.set(cv2.CAP_PROP_FPS, 30)
-        time.sleep(2)
+        # time.sleep(2)
 
     def step(self) -> DataChunk:
         data_chunk = DataChunk()

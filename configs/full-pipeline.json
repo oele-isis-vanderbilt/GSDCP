@@ -1,0 +1,163 @@
+{
+  "mode": "record",
+  "runtime": 300,
+  "workers": {
+    "manager_ip": "129.59.104.153",
+    "manager_port": 9001,
+    "instances": [
+      {
+        "name": "windows",
+        "id": "windows",
+        "description": "Windows worker for GSDCP",
+        "remote": true
+      },
+      {
+        "name": "linux",
+        "id": "linux",
+        "description": "Linux worker for GSDCP",
+        "remote": false
+      },
+      {
+        "name": "mac",
+        "id": "mac",
+        "description": "Mac worker for GSDCP",
+        "remote": true
+      }
+    ]
+  },
+  "nodes": [
+    {
+      "registry_name": "GSDCP_DroidCam",
+      "name": "cam-1",
+      "kwargs": {
+        "phone_ip": "192.168.0.233",
+        "droidcam_port": 4747,
+        "frame_key": "frame",
+        "save_name": "cam-1"
+      },
+      "package": "gsdcp"
+    },
+    {
+      "registry_name": "GSDCP_DroidCam",
+      "name": "cam-2",
+      "kwargs": {
+        "phone_ip": "192.168.0.238",
+        "droidcam_port": 4747,
+        "frame_key": "frame",
+        "save_name": "cam-2"
+      },
+      "package": "gsdcp"
+    },
+    {
+      "registry_name": "GSDCP_DroidCam",
+      "name": "cam-3",
+      "kwargs": {
+        "phone_ip": "192.168.0.202",
+        "droidcam_port": 4747,
+        "frame_key": "frame",
+        "save_name": "cam-3"
+      },
+      "package": "gsdcp"
+    },
+    {
+      "registry_name": "GSDCP_DroidCam",
+      "name": "cam-4",
+      "kwargs": {
+        "phone_ip": "192.168.0.200",
+        "droidcam_port": 4747,
+        "frame_key": "frame",
+        "save_name": "cam-4"
+      },
+      "package": "gsdcp"
+    },
+    {
+      "registry_name": "CPPipelines_ScreenCapture",
+      "name": "screen-capture",
+      "kwargs": {
+        "scale": 0.5,
+        "save_name": "screen-capture-gemstep"
+      },
+      "package": "chimerapy-pipelines"
+    },
+    {
+      "registry_name": "GSDCP_FilesWatcher",
+      "name": "logs-watcher",
+      "kwargs": {
+        "name": "logs-watcher",
+        "patterns": [
+          ".txt"
+        ],
+        "observer_type": "kqueue",
+        "target_directory": "/Users/oele/Documents/projects/GSDCP/watch_dir"
+      },
+      "package": "gsdcp"
+    },
+    {
+      "registry_name": "GSDCP_UMC1820",
+      "name": "audio-umc1820",
+      "kwargs": {
+        "name": "audio-umc1820",
+        "chunk_key": "audio",
+        "save_name": "mic"
+      },
+      "package": "gsdcp"
+    },
+    {
+      "registry_name": "CPPipelines_ShowWindows",
+      "name": "show",
+      "kwargs": {
+      },
+      "package": "chimerapy-pipelines"
+    }
+  ],
+  "adj": [
+    [
+      "cam-1",
+      "show"
+    ],
+    [
+      "cam-2",
+      "show"
+    ],
+    [
+      "cam-3",
+      "show"
+    ],
+    [
+      "cam-4",
+      "show"
+    ],
+    [
+      "screen-capture",
+      "show"
+    ]
+  ],
+  "manager_config": {
+    "logdir": "cp-logs",
+    "port": 9001
+  },
+  "mappings": {
+    "windows": [
+      "cam-1",
+      "cam-2",
+      "cam-3",
+      "cam-4"
+    ],
+    "linux": [
+      "audio-umc1820",
+      "show"
+    ],
+    "mac": [
+      "screen-capture",
+      "logs-watcher"
+    ]
+  },
+   "timeouts": {
+    "commit_timeout": 20000,
+    "preview_timeout": 20000,
+    "record_timeout": 20000,
+    "collect_timeout": 20000,
+    "stop_timeout": 20000,
+    "shutdown_timeout": 20000
+  }
+}

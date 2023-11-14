@@ -1,0 +1,52 @@
+{
+  "mode": "record",
+  "workers": {
+    "manager_ip": "129.59.104.153",
+    "manager_port": 9001,
+    "instances": [
+      {
+        "name": "linux-1",
+        "id": "linux-1",
+        "description": "local worker for the MMLA pipeline demo with a video node",
+        "remote": false
+      }
+    ]
+  },
+  "nodes": [
+    {
+       "registry_name": "GSDCP_ScreenSubscriber",
+        "name": "screen-subscriber",
+        "kwargs": {
+          "name": "screen-subscriber",
+          "host": "192.168.0.179",
+          "port": 65300,
+          "save_name": "screen"
+        },
+        "package": "gsdcp"
+    },
+    {
+      "registry_name": "CPPipelines_ShowWindows",
+      "name": "show",
+      "kwargs": {},
+      "package": "chimerapy-pipelines"
+    }
+  ],
+  "adj": [[
+    "screen-subscriber",
+    "show"
+  ]],
+  "manager_config": {
+    "logdir": "gemstep-logs",
+    "port": 9001
+  },
+  "mappings": {
+    "linux-1": [
+        "screen-subscriber",
+        "show"
+    ]
+  },
+  "timeouts": {
+    "commit_timeout": 200,
+    "collect_timeout": 400
+  }
+}

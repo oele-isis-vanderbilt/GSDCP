@@ -1,0 +1,106 @@
+{
+  "mode": "preview",
+  "workers": {
+    "manager_ip": "129.59.104.153",
+    "manager_port": 9001,
+    "instances": [
+      {
+        "name": "local",
+        "id": "local",
+        "description": "local worker for the MMLA pipeline demo with a screen recorder node",
+        "remote": false
+      },
+      {
+        "name": "windows",
+        "id": "windows",
+        "remote": false,
+        "description": "remote worker for the MMLA pipeline demo with a screen recorder node"
+      }
+    ]
+  },
+  "nodes": [
+    {
+      "registry_name": "GSDCP_IPWebCam",
+      "name": "cam-1",
+      "kwargs": {
+        "url": "rtmp://localhost/live/cam1",
+        "save_name": "android-1"
+      },
+      "package": "gsdcp"
+    },
+    {
+      "registry_name": "GSDCP_IPWebCam",
+      "name": "cam-2",
+      "kwargs": {
+        "url": "rtmp://localhost/live/cam2",
+        "save_name": "android-2"
+      },
+      "package": "gsdcp"
+    },
+    {
+      "registry_name": "GSDCP_IPWebCam",
+      "name": "cam-3",
+      "kwargs": {
+        "url": "rtmp://localhost/live/cam3",
+        "save_name": "android-3"
+      },
+      "package": "gsdcp"
+    },
+    {
+      "registry_name": "GSDCP_IPWebCam",
+      "name": "cam-4",
+      "kwargs": {
+        "url": "rtmp://localhost/live/cam4",
+        "save_name": "android-4"
+      },
+      "package": "gsdcp"
+    },
+    {
+      "registry_name": "CPPipelines_ShowWindows",
+      "name": "show",
+      "kwargs": {},
+      "package": "chimerapy-pipelines"
+    }
+  ],
+  "adj": [
+    [
+      "cam-1",
+      "show"
+    ],
+    [
+      "cam-2",
+      "show"
+    ],
+    [
+      "cam-3",
+      "show"
+    ],
+    [
+      "cam-4",
+      "show"
+    ]
+  ],
+  "manager_config": {
+    "logdir": "camera-screencapture-logs",
+    "port": 9001
+  },
+  "mappings": {
+    "windows": [
+      "cam-1",
+      "cam-2",
+      "cam-3",
+      "cam-4"
+    ],
+    "local": [
+      "show"
+    ]
+  },
+  "timeouts": {
+    "commit_timeout": 20000,
+    "preview_timeout": 20000,
+    "record_timeout": 20000,
+    "collect_timeout": 20000,
+    "stop_timeout": 20000,
+    "shutdown_timeout": 20000
+  }
+}

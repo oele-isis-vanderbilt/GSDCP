@@ -1,0 +1,109 @@
+{
+  "mode": "preview",
+  "workers": {
+    "manager_ip": "129.59.104.153",
+    "manager_port": 9001,
+    "instances": [
+      {
+        "name": "local",
+        "id": "local",
+        "description": "local worker for the MMLA pipeline demo with a screen recorder node",
+        "remote": false
+      }
+    ]
+  },
+  "nodes": [
+    {
+      "registry_name": "GSDCP_IPWebCam",
+      "name": "cam-1",
+      "kwargs": {
+        "url": "rtmp://localhost/live/cam1",
+        "save_name": "cam-1"
+      },
+      "package": "gsdcp"
+    },
+    {
+      "registry_name": "GSDCP_IPWebCam",
+      "name": "cam-2",
+      "kwargs": {
+        "url": "rtmp://localhost/live/cam2",
+        "save_name": "cam-2"
+      },
+      "package": "gsdcp"
+    },
+    {
+      "registry_name": "GSDCP_IPWebCam",
+      "name": "cam-3",
+      "kwargs": {
+        "url": "rtmp://localhost/live/cam3",
+        "save_name": "cam-3"
+      },
+      "package": "gsdcp"
+    },
+    {
+      "registry_name": "GSDCP_IPWebCam",
+      "name": "cam-4",
+      "kwargs": {
+        "url": "rtmp://localhost/live/cam4",
+        "save_name": "cam-4"
+      },
+      "package": "gsdcp"
+    },
+    {
+       "registry_name": "GSDCP_UMC1820",
+        "name": "audio-test-umc1820",
+        "kwargs": {
+          "name": "audio-test-umc1820",
+          "chunk_key": "audio",
+          "save_name": "test-audio-data"
+        },
+        "package": "gsdcp"
+    },
+    {
+      "registry_name": "CPPipelines_ShowWindows",
+      "name": "show",
+      "kwargs": {},
+      "package": "chimerapy-pipelines"
+    }
+  ],
+  "adj": [
+    [
+      "cam-1",
+      "show"
+    ],
+    [
+      "cam-2",
+      "show"
+    ],
+    [
+      "cam-3",
+      "show"
+    ],
+    [
+      "cam-4",
+      "show"
+    ]
+  ],
+  "manager_config": {
+    "logdir": "November15Tests",
+    "port": 9001
+  },
+  "mappings": {
+    "local": [
+      "cam-1",
+      "cam-2",
+      "cam-3",
+      "cam-4",
+      "audio-test-umc1820",
+      "show"
+    ]
+  },
+  "timeouts": {
+    "commit_timeout": 20000,
+    "preview_timeout": 20000,
+    "record_timeout": 20000,
+    "collect_timeout": 20000,
+    "stop_timeout": 20000,
+    "shutdown_timeout": 20000
+  }
+}

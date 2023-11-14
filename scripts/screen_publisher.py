@@ -50,10 +50,16 @@ async def run(args):
 
     print(f"Publishing screen capture on port {args.port}.")
     while True:
+        start_time = datetime.now()
         await publish_screen(
             cap, socket, args.scale, args.monitor, args.save_timestamp
         )
-        await asyncio.sleep(1 / args.fps)
+        end_time = datetime.now()
+        delta = end_time - start_time
+        sleep_time = 1 / args.fps - delta.total_seconds()
+        if sleep_time < 0:
+            sleep_time = 0
+        await asyncio.sleep(sleep_time)
 
 
 if __name__ == "__main__":

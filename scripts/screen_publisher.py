@@ -70,7 +70,7 @@ if __name__ == "__main__":
         formatter_class=ArgumentDefaultsHelpFormatter,
     )
     parser.add_argument(
-        "--port", "-p", help="The port to publish on.", type=int, default=8080
+        "--port", "-p", help="The port to publish on.", type=int, default=65300
     )
 
     parser.add_argument(

@@ -9,12 +9,6 @@
         "id": "local",
         "description": "local worker for the MMLA pipeline demo with a screen recorder node",
         "remote": false
-      },
-      {
-        "name": "windows",
-        "id": "windows",
-        "remote": false,
-        "description": "remote worker for the MMLA pipeline demo with a screen recorder node"
       }
     ]
   },
@@ -56,6 +50,27 @@
       "package": "gsdcp"
     },
     {
+       "registry_name": "GSDCP_ScreenSubscriber",
+        "name": "screen-subscriber",
+        "kwargs": {
+          "name": "screen-subscriber",
+          "host": "192.168.0.80",
+          "port": 65300,
+          "save_name": "screen"
+        },
+        "package": "gsdcp"
+    },
+    {
+       "registry_name": "GSDCP_UMC1820",
+        "name": "audio-test-umc1820",
+        "kwargs": {
+          "name": "audio-test-umc1820",
+          "chunk_key": "audio",
+          "save_name": "test-audio-data"
+        },
+        "package": "gsdcp"
+    },
+    {
       "registry_name": "CPPipelines_ShowWindows",
       "name": "show",
       "kwargs": {},
@@ -78,20 +93,24 @@
     [
       "cam-4",
       "show"
+    ],
+    [
+      "screen-subscriber",
+      "show"
     ]
   ],
   "manager_config": {
-    "logdir": "camera-screencapture-logs",
+    "logdir": "November15Tests",
     "port": 9001
   },
   "mappings": {
-    "windows": [
+    "local": [
       "cam-1",
       "cam-2",
       "cam-3",
-      "cam-4"
-    ],
-    "local": [
+      "cam-4",
+      "screen-subscriber",
+      "audio-test-umc1820",
       "show"
     ]
   },
